@@ -1,0 +1,14 @@
+venv/
+__pycache__/
+*.pyc
+*.pth
+temp.pth
+
+LEVIR CD/
+before_r10/
+after_r10m/
+*.jp2
+
+.vscode/
+.idea/
+.DS_Store

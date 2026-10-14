@@ -13,7 +13,7 @@ Given a "before" and "after" image of the same area, each model predicts a per-p
 
 The Türkiye pair is stored in `before_r10/` and `after_r10m/` (JP2 files; `bo2`, `bo3`, `bo4` are the B, G, R bands). Scenes are cut into 128×128 patches and labelled automatically: a pixel is marked as changed when the intensity difference between the two dates exceeds a threshold.
 
-`process.py` trains and evaluates on LEVIR-CD. The Türkiye patching and thresholded labelling step is not part of this script.
+The code trains and evaluates on LEVIR-CD. The Türkiye patching and thresholded labelling step is not part of the code in this repo.
 
 ## Models
 
@@ -47,12 +47,12 @@ LEVIR CD/
 ## Usage
 
 ```bash
-python process.py
+python main.py
 ```
 
 Each model is trained for 5 epochs (Adam, lr = 0.001, batch size 4, BCE loss) over 3 independent runs with random 80/20 train/test splits. Reported metrics are mean ± std across runs. The script prints IoU, F1, precision, recall, accuracy, FPS, parameter count (M) and model size (MB), then shows a before / after / ground truth / prediction figure.
 
-Hyperparameters are constants at the top of `process.py`.
+Hyperparameters and paths live in `changedet/config.py`.
 
 ## Results
 
@@ -90,10 +90,17 @@ Cross-dataset (train → test): LEVIR-CD → Türkiye gives 9.80% IoU, Türkiye 
 ## Project structure
 
 ```
-process.py     dataset, models, training, evaluation, benchmarking
-before_r10/    Sentinel-2 bands, 2023-01-25 (Türkiye)
-after_r10m/    Sentinel-2 bands, 2023-02-09 (Türkiye)
-LEVIR CD/      LEVIR-CD dataset
+main.py              experiment runner
+changedet/
+  config.py          hyperparameters, device, dataset path
+  data.py            LEVIR-CD dataset loader
+  models.py          Lightweight CNN, U-Net, Siamese U-Net, MobileNetV2
+  engine.py          training, evaluation, FPS benchmark
+  metrics.py         segmentation metrics, parameter count, model size
+  viz.py             prediction plots
+before_r10/          Sentinel-2 bands, 2023-01-25 (Türkiye)
+after_r10m/          Sentinel-2 bands, 2023-02-09 (Türkiye)
+LEVIR CD/            LEVIR-CD dataset
 ```
 
 ## Future work
